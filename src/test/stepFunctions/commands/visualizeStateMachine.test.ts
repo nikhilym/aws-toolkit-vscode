@@ -395,20 +395,28 @@ describe('StepFunctions VisualizeStateMachine', async () => {
         assert.strictEqual(aslVisualizationManager.getManagedVisualizations().size, 0)
 
         // Preview Doc1
+        console.log('* Show doc')
         mockVsCode.showTextDocument(mockTextDocumentOne)
+        console.log('* visualise state machine')
         let panel = await aslVisualizationManager.visualizeStateMachine(mockGlobalStorage)
+        console.log('* get visualization size')
         assert.strictEqual(aslVisualizationManager.getManagedVisualizations().size, 1)
 
         // Preview Doc2
+        console.log('* Show doc 2')
         mockVsCode.showTextDocument(mockTextDocumentTwo)
+        console.log('* visualise state machine 2')
         await aslVisualizationManager.visualizeStateMachine(mockGlobalStorage)
+        console.log('* get visualization size 2')
         assert.strictEqual(aslVisualizationManager.getManagedVisualizations().size, 2)
 
         // Dispose of first visualization panel
         assert.ok(panel, 'Panel was not successfully generated')
         panel = panel as vscode.WebviewPanel
+        console.log('* dispose panel')
         panel.dispose()
 
+        console.log('*get size 3')
         assert.strictEqual(aslVisualizationManager.getManagedVisualizations().size, 1)
     })
 

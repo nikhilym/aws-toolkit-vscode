@@ -61,6 +61,7 @@ export class AslVisualization {
     }
 
     public async sendUpdateMessage(updatedTextDocument: vscode.TextDocument) {
+        console.log('* sendUpdateMessage')
         const logger: Logger = getLogger()
         const isYaml = updatedTextDocument.languageId === 'yaml'
         const text = updatedTextDocument.getText()
@@ -124,6 +125,7 @@ export class AslVisualization {
         // Add listener function to update the graph on document save
         this.disposables.push(
             vscode.workspace.onDidSaveTextDocument(async savedTextDocument => {
+                console.log('* onDidSaveTextDocument')
                 if (savedTextDocument && savedTextDocument.uri.path === documentUri.path) {
                     await this.sendUpdateMessage(savedTextDocument)
                 }
@@ -133,7 +135,9 @@ export class AslVisualization {
         // If documentUri being tracked is no longer found (due to file closure or rename), close the panel.
         this.disposables.push(
             vscode.workspace.onDidCloseTextDocument(documentWillSaveEvent => {
+                console.log('* onDidCloseTextDocument')
                 if (!this.trackedDocumentDoesExist(documentUri) && !this.isPanelDisposed) {
+                    console.log('* disposing panel')
                     panel.dispose()
                     vscode.window.showInformationMessage(
                         localize(
@@ -186,9 +190,12 @@ export class AslVisualization {
 
         // When the panel is closed, dispose of any disposables/remove subscriptions
         const disposePanel = () => {
+            console.log('* disposePanel')
             if (this.isPanelDisposed) {
+                console.log('* disposePanel: already disposed')
                 return
             }
+            console.log('* disposePanel: disposing')
             this.isPanelDisposed = true
             debouncedUpdate.cancel()
             this.onVisualizationDisposeEmitter.fire()
@@ -196,6 +203,7 @@ export class AslVisualization {
                 disposable.dispose()
             })
             this.onVisualizationDisposeEmitter.dispose()
+            console.log('* disposePanel: done disposing')
         }
 
         this.disposables.push(
