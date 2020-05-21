@@ -24,6 +24,7 @@ export class AslVisualizationManager {
 
     public async visualizeStateMachine(globalStorage: vscode.Memento): Promise<vscode.WebviewPanel | undefined> {
         const logger: Logger = getLogger()
+        console.log('* get cache')
         const cache = new StateMachineGraphCache()
 
         /* TODO: Determine behaviour when command is run against bad input, or
@@ -34,29 +35,40 @@ export class AslVisualizationManager {
         const activeTextEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor
 
         if (!activeTextEditor) {
+            console.log('* no active text editor')
             logger.error('Could not get active text editor for state machine render.')
             throw new Error('Could not get active text editor for state machine render.')
         }
 
+        console.log('* have active text editor')
         const textDocument: vscode.TextDocument = activeTextEditor.document
 
         // Attempt to retrieve existing visualization if it exists.
+        console.log('* get existing visualization')
         const existingVisualization = this.getExistingVisualization(textDocument.uri)
         if (existingVisualization) {
+            console.log('* existing visualization exists')
             existingVisualization.showPanel()
 
+            console.log('* show panel')
             return existingVisualization.getPanel()
         }
 
         // Existing visualization does not exist, construct new visualization
         try {
+            console.log('* update cache')
             await cache.updateCache(globalStorage)
 
+            console.log('* make visualization')
             const newVisualization = new AslVisualization(textDocument)
+            console.log('* handle visualization')
             this.handleNewVisualization(newVisualization)
 
+            console.log('* get panel')
             return newVisualization.getPanel()
         } catch (err) {
+            console.log('* error')
+            console.log(err)
             vscode.window.showInformationMessage(
                 localize(
                     'AWS.stepfunctions.visualisation.errors.rendering',
