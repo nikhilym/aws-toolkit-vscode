@@ -37,6 +37,7 @@ export class AslVisualization {
 
     public constructor(textDocument: vscode.TextDocument) {
         this.documentUri = textDocument.uri
+        console.log('set up webview panel')
         this.webviewPanel = this.setupWebviewPanel(textDocument)
     }
 
@@ -104,9 +105,11 @@ export class AslVisualization {
         const logger: Logger = getLogger()
 
         // Create and show panel
+        console.log('create webview panel')
         const panel = this.createVisualizationWebviewPanel(documentUri)
 
         // Set the initial html for the webpage
+        console.log('set html')
         panel.webview.html = this.getWebviewContent(
             ext.visualizationResourcePaths.webviewBodyScript.with({ scheme: 'vscode-resource' }),
             ext.visualizationResourcePaths.visualizationLibraryScript.with({ scheme: 'vscode-resource' }),
@@ -153,6 +156,7 @@ export class AslVisualization {
 
         this.disposables.push(
             vscode.workspace.onDidChangeTextDocument(async textDocumentEvent => {
+                console.log('* onDidChangeTextDocument')
                 if (textDocumentEvent.document.uri.path === documentUri.path) {
                     await debouncedUpdate(textDocumentEvent.document)
                 }
@@ -162,6 +166,7 @@ export class AslVisualization {
         // Handle messages from the webview
         this.disposables.push(
             panel.webview.onDidReceiveMessage(async (message: MessageObject) => {
+                console.log('* onDidReceiveMessage')
                 switch (message.command) {
                     case 'updateResult':
                         logger.debug(message.text)
@@ -216,6 +221,7 @@ export class AslVisualization {
     }
 
     private createVisualizationWebviewPanel(documentUri: vscode.Uri): vscode.WebviewPanel {
+        console.log('calling createWebviewPanel')
         return vscode.window.createWebviewPanel(
             'stateMachineVisualization',
             this.makeWebviewTitle(documentUri),
