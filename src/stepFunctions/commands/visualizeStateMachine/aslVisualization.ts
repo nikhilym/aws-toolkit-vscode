@@ -109,12 +109,23 @@ export class AslVisualization {
         const panel = this.createVisualizationWebviewPanel(documentUri)
 
         // Set the initial html for the webpage
+        console.log(JSON.stringify(ext.visualizationResourcePaths, undefined, 4))
+
+        console.log('uri: webviewBodyScript')
+        const a = ext.visualizationResourcePaths.webviewBodyScript.with({ scheme: 'vscode-resource' })
+        console.log('uri: visualizationLibraryScript')
+        const b = ext.visualizationResourcePaths.visualizationLibraryScript.with({ scheme: 'vscode-resource' })
+        console.log('uri: visualizationLibraryCSS')
+        const c = ext.visualizationResourcePaths.visualizationLibraryCSS.with({ scheme: 'vscode-resource' })
+        console.log('uri: stateMachineCustomThemeCSS')
+        const d = ext.visualizationResourcePaths.stateMachineCustomThemeCSS.with({ scheme: 'vscode-resource' })
+
         console.log('set html')
         panel.webview.html = this.getWebviewContent(
-            ext.visualizationResourcePaths.webviewBodyScript.with({ scheme: 'vscode-resource' }),
-            ext.visualizationResourcePaths.visualizationLibraryScript.with({ scheme: 'vscode-resource' }),
-            ext.visualizationResourcePaths.visualizationLibraryCSS.with({ scheme: 'vscode-resource' }),
-            ext.visualizationResourcePaths.stateMachineCustomThemeCSS.with({ scheme: 'vscode-resource' }),
+            a, // ext.visualizationResourcePaths.webviewBodyScript.with({ scheme: 'vscode-resource' }),
+            b, // ext.visualizationResourcePaths.visualizationLibraryScript.with({ scheme: 'vscode-resource' }),
+            c, // ext.visualizationResourcePaths.visualizationLibraryCSS.with({ scheme: 'vscode-resource' }),
+            d, // ext.visualizationResourcePaths.stateMachineCustomThemeCSS.with({ scheme: 'vscode-resource' }),
             {
                 inSync: localize(
                     'AWS.stepFunctions.graph.status.inSync',
@@ -217,6 +228,7 @@ export class AslVisualization {
             })
         )
 
+        console.log('return panel')
         return panel
     }
 
